@@ -1,0 +1,9 @@
+[package]
+name = "color-sort-puzzle-solver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "3.0"
+image = { git = "https://github.com/image-rs/image.git" } # waiting for new version with https://github.com/image-rs/image/pull/1674
+palette = "0.6"

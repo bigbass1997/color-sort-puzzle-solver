@@ -1,0 +1,5 @@
+/target
+/out
+/*.png
+*.iml
+/.idea
