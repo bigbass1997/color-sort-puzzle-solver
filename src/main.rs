@@ -6,7 +6,6 @@ use crate::puzzle::PuzzleState;
 
 pub mod puzzle;
 pub mod recognition;
-pub mod util;
 
 
 fn main() {

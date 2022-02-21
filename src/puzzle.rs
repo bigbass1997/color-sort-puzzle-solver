@@ -1,7 +1,6 @@
 use std::collections::vec_deque::VecDeque;
 use std::ops::Deref;
 use crate::recognition::ParsedTube;
-use crate::util::InfCell;
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct TubeState(pub VecDeque<u32>);
@@ -134,34 +133,41 @@ pub struct Transfer {
 }
 impl Transfer {
     pub fn try_perform(&self, state: &PuzzleState) -> Result<PuzzleState, ()> {
-        let state = InfCell::new(state.clone());
-        let from: &mut TubeState = &mut state.get_mut().0[self.from];
-        if from.is_empty() { return Err(()) }
+        if self.from == self.to { return Err(()) }
         
-        let to: &mut TubeState = &mut state.get_mut().0[self.to];
-        if to.is_full() { return Err(()) }
-        
-        let from_count = from.count_top_color(); // mini-optimization
-        
-        if from_count == 4 { return Err(()) } // from tube is solved, no reason to move it
-        
-        if to.is_empty() {
-            for _ in 0..from_count {
-                to.0.push_back(from.0.pop_back().unwrap());
-            }
-            return Ok(state.unwrap());
-        }
-        
-        if *from.back().unwrap() == *to.back().unwrap() {
-            if from_count + to.len() <= 4 {
+        // The following code is safe because we've checked to make sure the 'to' and 'from' indices are different.
+        // At this time, the compiler is not smart enough to recognize this.
+        // `.split_at_mut()` is the "safe" alternative, but it needlessly complicates the code with extra checks and operations.
+        // Using an implementation of UnsafeCell<T> could also work, but again, that is more code than what's used here.
+        unsafe {
+            let mut state = state.clone();
+            let to: &mut TubeState = &mut *(state.0.get_unchecked_mut(self.to) as *mut _);
+            if to.is_full() { return Err(()) }
+            
+            let from: &mut TubeState = &mut *(state.0.get_unchecked_mut(self.from) as *mut _);
+            if from.is_empty() { return Err(()) }
+            
+            let from_count = from.count_top_color(); // mini-optimization
+            
+            if from_count == 4 { return Err(()) } // from tube is solved, no reason to move it
+            
+            if to.is_empty() {
                 for _ in 0..from_count {
                     to.0.push_back(from.0.pop_back().unwrap());
                 }
-                return Ok(state.unwrap());
-            } else {
-                return Err(());
+                return Ok(state);
             }
-        } else {
+            
+            if *from.back().unwrap() == *to.back().unwrap() {
+                if from_count + to.len() <= 4 {
+                    for _ in 0..from_count {
+                        to.0.push_back(from.0.pop_back().unwrap());
+                    }
+                    return Ok(state);
+                }
+            }
+            
+            
             return Err(());
         }
     }
