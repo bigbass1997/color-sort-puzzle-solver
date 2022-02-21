@@ -1,8 +1,7 @@
 use std::collections::vec_deque::VecDeque;
 use image::{Rgb, RgbImage};
 use palette::FromColor;
-use crate::puzzle::TubeState;
-use crate::PuzzleState;
+use crate::puzzle::{PuzzleState, TubeState};
 
 #[derive(Clone, Debug, Default)]
 pub struct ParsedTube {

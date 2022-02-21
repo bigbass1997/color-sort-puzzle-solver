@@ -47,11 +47,11 @@ impl TubeState {
 }
 
 
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct PuzzleStateNode {
     pub transfers: Vec<Transfer>,
     pub state: PuzzleState,
 }
-
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct PuzzleState(pub Vec<TubeState>);
