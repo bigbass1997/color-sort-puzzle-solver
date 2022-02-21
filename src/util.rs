@@ -31,6 +31,10 @@ impl<T> InfCell<T> {
     pub fn get_mut(&self) -> &'static mut T {
         unsafe { &mut *self.get_raw() }
     }
+    
+    pub fn unwrap(self) -> T {
+        self.uc.into_inner()
+    }
 }
 
 unsafe impl<T> Send for InfCell<T> {}
