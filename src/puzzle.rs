@@ -63,6 +63,7 @@ impl Deref for PuzzleState {
     }
 }
 impl PuzzleState {
+    // Portions of this solve algorithm were inspired by https://github.com/ericboehlke/tube_solver/blob/c648cf72638f1fc033efb2eed53029f18d473ff0/src/lib.rs#L631
     pub fn solve(&self) -> Option<PuzzleStateNode> {
         let mut explored_states: Vec<PuzzleState> = vec![self.clone()];
         let mut queue = VecDeque::from([PuzzleStateNode { transfers: vec![], state: self.clone() }]);
